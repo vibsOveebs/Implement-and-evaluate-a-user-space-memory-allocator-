@@ -1,7 +1,10 @@
 To build and to run the program: 
-#make clean
-#make
-#./prog3
+
+make clean
+
+make
+
+./prog3
 
 
 Resources:
