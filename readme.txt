@@ -1,8 +1,8 @@
-To build: make FILE=<filename.c>
+To build and to run the program: 
+make clean
+make
+./prog3
 
-Where <filename.c> is the C program to be linked against the psulibmem. A shared library, psulibmem.so, will be generated and the entered C file will be linked against it.
-
-To clean up object files and shared library: make clean
 
 Resources:
 http://man7.org/linux/man-pages/man2/mmap.2.html -> slides
