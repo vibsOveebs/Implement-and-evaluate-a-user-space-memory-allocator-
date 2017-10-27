@@ -149,7 +149,6 @@ int psufree(void* ptr) {
     clock_gettime(CLOCK_MONOTONIC, &s_end);
     fprintf(fp, "%lld\n", ((long long)s_end.tv_nsec - (long long)s_begin.tv_nsec));
     fclose(fp);
-
     return 0;
 }
 
@@ -161,38 +160,28 @@ void psumemdump() {
 }
 
 /* Search the data structure for memory chunks that can be combined */
-void coalesce() {//currentPtr
+void coalesce() {
     for(node_t* ptr = head; ptr != NULL; ptr = ptr->next) {
         /* leadPtr for ptr */        
-      	//node_t* nextPtr = (node_t*)((char*)ptr + sizeof(node_t) + ptr->size);
         node_t* nextPtr = (node_t*)((char*)ptr + nodeSize + ptr->size);
-	//nextC
         node_t* followPtr = head;
-	//prevPtr
 	node_t* leadPtr = head; 
-	//check
-        //for(node_t* leadPtr = head; leadPtr != NULL; ) { 
 	while(leadPtr != NULL) {
             if(leadPtr == nextPtr) {
 	        /* Free chunk found, combine with surrounding memory */
-                followPtr->next = leadPtr->next; 
-		
-                //ptr->size += (leadPtr->size + sizeof(node_t));  
+                followPtr->next = leadPtr->next; 		         
 		ptr->size += (leadPtr->size + nodeSize);             
-                //nextPtr = (node_t*)((char*)ptr + sizeof(node_t) + ptr->size);  
 		nextPtr = (node_t*)((char*)ptr + nodeSize + ptr->size);
                 if(leadPtr != head) {
 		    /* Shift the lead pointer, make the common case fast */
-		    leadPtr->next = NULL;
+		    leadPtr->next = NULL; /* Free chunk located and handled, stop loop */
                     leadPtr = followPtr->next;
                 } else {
 		    /* Chunk is located at head, shift it and reset it */
                     head = head->next;
-		    leadPtr->next = NULL;         
+		    leadPtr->next = NULL; /* Free chunk located and handled, stop loop */         
                     leadPtr = head;
-                }
-		/* Free chunk located and handled, stop loop */
-		//leadPtr->next = NULL;
+                }		
             } else {
 	        /* Update the follower */
                 followPtr = leadPtr;
